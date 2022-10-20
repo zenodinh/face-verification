@@ -11,29 +11,23 @@ def isUsernameExists(username):
 
 
 def register():
-    global bestImage
+    windowName = "Register"
+    alignWindow(windowName)
     loadImages()
     encodingKnownList = findEncodings(images)
-    print("Warning: username must be unique and can't be change")
-    while True:
-        name = input("Input username: ")
-        if isUsernameExists(name):
-            print("This username is already assigned. Please try again\n")
-        else:
-            break
 
     cap = cv2.VideoCapture(0)
     now = datetime.datetime.now()
-    cv2.startWindowThread()
 
-    while datetime.datetime.now().second - now.second < 20:
+    showTemp(windowName, cap, now)
+
+    while datetime.datetime.now().second - now.second < 7:
         success, frame = cap.read()
-        originImg = frame.copy()
+        cv2.imshow(windowName, frame)
+        origin = frame.copy()
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         faces = face_recognition.face_locations(frame)
-        if not faces:
-            continue
-        encodes = face_recognition.face_encodings(frame, faces)[0]
+        encodes = face_recognition.face_encodings(frame, faces)
 
         for encode, face in zip(encodes, faces):
             matches = face_recognition.compare_faces(encodingKnownList, encode)
@@ -42,17 +36,25 @@ def register():
 
             if matches[matchIndex]:
                 print("You have been registered before, please login instead\n")
-                cap.release()
                 cv2.destroyAllWindows()
+                cv2.waitKey(1)
+                cap.release()
                 return ""
             else:
-                caseCade = cv2.CascadeClassifier(cv2.data.haarcascades + f'{dataFolder}../Models/haarcascade_frontalface_default.xml')
-                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-                face = caseCade.detectMultiScale(gray)
-                if 0 < len(face) < 2:
-                    print("Register successfully\n")
-                    cv2.imwrite(os.path.join(dataFolder, name.lower() + ".jpg"), frame)
-                    cap.release()
-                    cv2.destroyAllWindows()
-                    return name
+                print("Register successfully\n")
+                print("Warning: username must be unique and can't be change")
+                cv2.destroyAllWindows()
+                cv2.waitKey(1)
+                cap.release()
+                while True:
+                    name = input("Input username: ")
+                    if isUsernameExists(name.lower()):
+                        print("This username is already assigned. Please try again\n")
+                    else:
+                        break
+                cv2.imwrite(os.path.join(dataFolder, name.lower() + ".jpg"), origin)
+                return name
+    cv2.destroyAllWindows()
+    cv2.waitKey(1)
+    cap.release()
     return ""
