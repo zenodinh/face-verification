@@ -8,3 +8,6 @@ You can install it global to your python or create new virtual venv below
 ## Guide in Pycharm to add virtual venv instead of global
 Choose File -> Settings -> Project: face-verification -> Python interpreter -> click + -> type name of those packages -> click install package.
 
+## Link github
+https://github.com/zenodinh/face-verification
+
