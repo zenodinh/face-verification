@@ -14,6 +14,8 @@ def alignWindow(windowName):
     cv2.namedWindow(windowName)
     cv2.moveWindow(windowName, 300, 100)
     cv2.startWindowThread()
+
+
 def showTemp(windowName, cap, now):
     while datetime.datetime.now().second - now.second < 4:
         success, frame = cap.read()
